@@ -490,7 +490,7 @@ class Main(commands.Cog):
                 'https://api.remove.bg/v1.0/removebg',
                 files={'image_file': open('picture/colla/image.png', 'rb')},
                 data={'size': 'auto'},
-                headers={'X-Api-Key': 'eHY8bzztB9qqgUeagwZqYV3z'},
+                headers={'X-Api-Key': ''},
               )
               with open("json/count.json","r")as f:
                  dic = json.load(f)
