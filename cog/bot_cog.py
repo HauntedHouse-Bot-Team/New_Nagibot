@@ -50,7 +50,7 @@ class Main(commands.Cog):
           for j in ng_list["dirty"]:
              if i == j:
                 return 2
-       
+
     @commands.command("goodbye")
     async def disconnect(self, ctx):
        """botを切ります"""
@@ -116,12 +116,12 @@ class Main(commands.Cog):
         for i in range(100):
             text+="ちんちん"
         await dm_channel.send(text)
-    
+
     @commands.command()
     async def logs(self, ctx):
        async for entry in ctx.guild.audit_logs(limit=100):
           print('{0.user} が {0.action} to {0.target}'.format(entry))
-   
+
     @commands.command("se一覧")
     async def se_list(self, ctx):
        directory = os.listdir('music')
@@ -133,14 +133,9 @@ class Main(commands.Cog):
           if count == 3:
              music_list += "\n"
              count=0
-             
+
        music_list += "```\n"
        await ctx.send(music_list)
-       
-       
-
-       
-
 
     @commands.command("リアリティストーン")
     async def reality(self, ctx):
@@ -278,8 +273,6 @@ class Main(commands.Cog):
            json.dump(fortune_judge, f, indent=3)
        self.user_data=fortune_judge
 
-
-
     @commands.command()
     async def slot(self, ctx):
         """スロットで遊びます"""
@@ -317,17 +310,24 @@ class Main(commands.Cog):
     @commands.command("送金")
     async def send_money(self, ctx, user_id: int, money: int):
         """みつはを誰かに送金できます.引数(ユーザーid,金額)"""
-        with open("json/bot_id.json","r")as f:
-            gold= json.load(f)
-        if gold[str(ctx.author.id)]["gold"]<money:
+        with open("json/bot_id.json","r") as f:
+            gold = json.load(f)
+
+        if money < 0:
+            await ctx.send('マイナスなんて存在しません。ぴえん')
+            return
+
+        if gold[str(ctx.author.id)]["gold"] < money:
             await ctx.send("お金が足りません。しくしく")
             return
-        else:
-            gold[str(ctx.author.id)]["gold"]-=money
-            gold[str(user_id)]["gold"]+=money
-        with open("json/bot_id.json","w")as f:
+
+        gold[str(ctx.author.id)]["gold"] -= money
+        gold[str(user_id)]["gold"] += money
+
+        with open("json/bot_id.json","w") as f:
             json.dump(gold, f, indent=3)
-        me=self.bot.get_user(user_id)
+
+        me = self.bot.get_user(user_id)
         await ctx.send(me.mention+f"に{money}みつは送金しました")
         self.user_data = gold
 
@@ -443,15 +443,8 @@ class Main(commands.Cog):
          with open("json/bot_id.json", "w") as f:
             json.dump(dic,f,indent=3)
 
-
-
-
-
-
-
       if (language_judge.isalnum(message.content)!=True or roma_judge.judge(message.content)!=True) and self.user_data[str(message.author.id)]["english_switch"]==True:
          await message.delete()
-
 
       if message.attachments:
           if message.content=="ミリシタコラ":
@@ -497,7 +490,7 @@ class Main(commands.Cog):
               if response.status_code == requests.codes.ok:
                  with open('picture/colla/no-bg.png', 'wb') as out:
                     out.write(response.content)
-                 
+
                     dic["bg_count"]-=1
                     num=dic["bg_count"]
               else:
@@ -510,7 +503,7 @@ class Main(commands.Cog):
 
           elif message.content == "幽霊屋敷のつぶやき":
              if self.tweet_wait == False:
-                
+
                 print(self.tweet_wait)
                 pd.download_img(message.attachments[0].url, "picture/yurei.png")
                 yt.tweet_yurei(message.author.display_name)
@@ -521,7 +514,7 @@ class Main(commands.Cog):
                 print(self.tweet_wait)
           elif message.content == "スクショ":
              if self.tweet_wait == False:
-                
+
                 print(self.tweet_wait)
                 pd.download_img(message.attachments[0].url, "picture/yurei.png")
                 yt.tweet_screen(message.author.display_name)
@@ -538,7 +531,7 @@ class Main(commands.Cog):
 
       if "肇ちゃん" in message.content:
          path = "picture/hajime/*.jpg"
-         num=glob.glob(path) 
+         num=glob.glob(path)
          await message.channel.send(file=discord.File(random.choice(num)))
 
       if "ちえり" in message.content:
@@ -555,22 +548,22 @@ class Main(commands.Cog):
           text=message.content.split("!random")
           num=random.randint(0,100)
           await message.channel.send(text[0]+str(num)+text[1])
-      
+
       if message.content.startswith("https://discordapp.com/channels/557933106544508980"):
           text=message.content.split("557933106544508980/")[1]
           text=text.split("/")
           channel = self.bot.get_channel(int(text[0]))
           messages=await channel.fetch_message(int(text[1]))
-          
+
 
           if messages.attachments:
                 embed = discord.Embed(title="引用元",description=messages.content)
                 embed.set_image(url=messages.attachments[0].url)
-                
+
                 embed.set_author(name=messages.author.display_name,icon_url=messages.author.avatar_url)
           else:
                 embed = discord.Embed(title="引用元",description=messages.content)
-                
+
                 embed.set_author(name=messages.author.display_name,icon_url=messages.author.avatar_url)
 
           await message.channel.send(embed=embed)
